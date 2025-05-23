@@ -1,0 +1,90 @@
+import java.util.*;
+
+class Room {
+    int roomNumber;
+    String category;
+    boolean isBooked;
+
+    Room(int roomNumber, String category) {
+        this.roomNumber = roomNumber;
+        this.category = category;
+        this.isBooked = false;
+    }
+}
+
+class Reservation {
+    String guestName;
+    Room room;
+
+    Reservation(String guestName, Room room) {
+        this.guestName = guestName;
+        this.room = room;
+    }
+}
+
+public class HotelReservationSystem {
+    static List<Room> rooms = new ArrayList<>();
+    static List<Reservation> reservations = new ArrayList<>();
+
+    static {
+        rooms.add(new Room(101, "Single"));
+        rooms.add(new Room(102, "Double"));
+        rooms.add(new Room(103, "Suite"));
+        rooms.add(new Room(104, "Single"));
+        rooms.add(new Room(105, "Double"));
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\n1. View Available Rooms\n2. Make a Reservation\n3. View Reservations\n4. Exit");
+            System.out.print("Choose an option: ");
+            int option = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            if (option == 1) {
+                System.out.print("Enter room category (Single/Double/Suite): ");
+                String category = scanner.nextLine();
+                boolean found = false;
+                for (Room room : rooms) {
+                    if (!room.isBooked && room.category.equalsIgnoreCase(category)) {
+                        System.out.println("Room " + room.roomNumber + " - " + room.category);
+                        found = true;
+                    }
+                }
+                if (!found) System.out.println("No available rooms in this category.");
+            } else if (option == 2) {
+                System.out.print("Enter your name: ");
+                String name = scanner.nextLine();
+                System.out.print("Enter preferred room category (Single/Double/Suite): ");
+                String category = scanner.nextLine();
+
+                boolean booked = false;
+                for (Room room : rooms) {
+                    if (!room.isBooked && room.category.equalsIgnoreCase(category)) {
+                        room.isBooked = true;
+                        reservations.add(new Reservation(name, room));
+                        System.out.println("Reservation successful! Room " + room.roomNumber + " booked.");
+                        booked = true;
+                        break;
+                    }
+                }
+                if (!booked) System.out.println("No available rooms to book in this category.");
+            } else if (option == 3) {
+                if (reservations.isEmpty()) {
+                    System.out.println("No reservations found.");
+                } else {
+                    for (Reservation reservation : reservations) {
+                        System.out.println("Guest: " + reservation.guestName + ", Room: " + reservation.room.roomNumber + " (" + reservation.room.category + ")");
+                    }
+                }
+            } else if (option == 4) {
+                System.out.println("Thank you for using the Hotel Reservation System.");
+                break;
+            } else {
+                System.out.println("Invalid option.");
+            }
+        }
+    }
+}
